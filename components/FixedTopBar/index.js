@@ -10,7 +10,7 @@ export default class FixedTopBar extends Component {
 
     return (
       <Appbar style={appBarStyles.topFixed}>
-        {iconStr !== "" ? <Icon name={iconStr} size={25} color="#ffffff" style={{marginLeft: 7}} />: <Icon />}
+        {iconStr !== "" ? <Icon name={iconStr} size={40} color="#ffffff" style={{marginLeft: 7}} />: <Icon />}
         <Text style={appBarStyles.titleStyle}>{title}</Text>
       </Appbar>
     );
@@ -23,14 +23,15 @@ const appBarStyles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    backgroundColor: '#cfcfcf',
+    height: 50,
+    backgroundColor: '#3cb371',
   },
 
   titleStyle: {
     marginLeft: 15,
-    fontFamily: 'JejuGothic',
-    color: '#000000',
-    fontSize: 20,
+    fontFamily: 'BMJUA_ttf',
+    color: 'black',
+    fontSize: 30,
     flex: 1,
   },
 

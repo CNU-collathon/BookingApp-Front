@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View, ScrollView, Image} from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph, Divider, Appbar } from 'react-native-paper';
 import { FlatGrid } from 'react-native-super-grid';
 
@@ -65,7 +65,7 @@ export default class CategorySelector extends Component {
             renderItem={({ item, index }) => (
               <TouchableOpacity onPress={() => this.onPressItem(item.name)}>
                 <View style={[gridStyles.itemContainer, { backgroundColor: item.color }]}>
-                  <Image style={itemStyles.itemIcon} source={item.imageSource}/>
+                  <Image style={itemStyles.itemIcon} source={item.imageSource}></Image>
                   <Text style={itemStyles.itemName}>{item.name}</Text>
                 </View>
               </TouchableOpacity>
@@ -76,6 +76,27 @@ export default class CategorySelector extends Component {
     );
   }
 }
+
+const appBarStyles = StyleSheet.create({
+  topFixed: {
+    backgroundColor: '#3cb371',
+    flexDirection: 'row',
+  },
+
+  titleStyle: {
+    fontSize: 30,
+    fontFamily: 'BMJUA_ttf',
+    flex: 1,
+    marginLeft: 5,
+  },
+
+  serviceQueryBtn: {
+    fontSize: 20,
+    fontFamily: 'BMJUA_ttf',
+    marginRight: 5,
+  }
+
+});
 
 
 const styles = StyleSheet.create({

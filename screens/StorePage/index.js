@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View, ScrollView, Image } from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph, Divider, Appbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -80,13 +80,14 @@ export default class StorePage extends Component {
 
         <ScrollView style={styles.container}>
           <Card>
-            <Card.Content>
-              <Title>Store Information</Title>
-              <Paragraph>{this.state.WorkPlaceID}</Paragraph>
+            <Card.Content Style={cardcontent.introduceStore}>
+            <Image Style={cardcontent.introduceStoreImage} source={require('./StoreMenu/test.png')}></Image>
+              <Title Style={cardcontent.introduceStoreTitle}>Store Information</Title>
+              <Paragraph Style={cardcontent.introduceStoreParagraph}>{this.state.WorkPlaceID}</Paragraph>
             </Card.Content>
           </Card>
 
-          <Divider />
+          <Divider style={[{borderBottomWidth:1, borderBottomColor: 'black'}]} />
           <MenuSelector menus={this.state.menus}
                         menuClickEvent={() => console.log("dd")}/>
         </ScrollView>
@@ -100,6 +101,27 @@ export default class StorePage extends Component {
   }
 }
 
+const cardcontent = StyleSheet.create({
+  introduceStore: {
+    flexDirection: 'column',
+    flex: 1,
+  },
+
+  introduceStoreImage: {
+    height: 10,
+    width: 10,
+  },
+
+  introduceStoreTitle:{
+    flex:1,
+  },
+
+  introduceStoreParagraph: {
+    flex: 1,
+  },
+
+});
+
 const appBarStyles = StyleSheet.create({
 
   bottomFixed: {
@@ -108,10 +130,15 @@ const appBarStyles = StyleSheet.create({
     bottom: 0,
     backgroundColor: '#cfcfcf',
   },
+  iconsStyle:{
+    backgroundColor: '#3cb371',
+    width: '100%',
+    height:'100%',
+  },
 
   titleStyle: {
     marginLeft: 15,
-    fontFamily: 'JejuGothic',
+    fontFamily: 'BMJUA_ttf',
     color: '#000000',
     fontSize: 20,
     flex: 1,
@@ -119,6 +146,7 @@ const appBarStyles = StyleSheet.create({
 
   iconsStartStyle: {
     alignSelf: 'flex-start',
+    backgroundColor: 'red',
   },
 
   iconsEndStyle: {
