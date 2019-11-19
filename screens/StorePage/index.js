@@ -76,25 +76,31 @@ export default class StorePage extends Component {
 
     return (
       <>
-        <FixedTopBar title={navigation.getParam('store', null)} iconStr="" />
+        
+        {/*(원래 코드) <FixedTopBar title={navigation.getParam('store', null)} iconStr="" />*/}
+        
+        <FixedTopBar title="test용 코드" iconStr="" />
 
         <ScrollView style={styles.container}>
           <Card>
-            <Card.Content Style={cardcontent.introduceStore}>
-            <Image Style={cardcontent.introduceStoreImage} source={require('./StoreMenu/test.png')}></Image>
-              <Title Style={cardcontent.introduceStoreTitle}>Store Information</Title>
-              <Paragraph Style={cardcontent.introduceStoreParagraph}>{this.state.WorkPlaceID}</Paragraph>
+            <Card.Content style={cardcontent.introduceStore}>
+              <Image style={content.introduceStoreImage} source={require('./StoreMenu/test.png')}></Image>
+              <Divider style={content.layout}>
+                <Title style={content.introduceStoreTitle}>Store Infomation</Title>
+                <Paragraph style={content.introduceStoreParagraph}>{/*{this.state.WorkPlaceID}*/}Test Text</Paragraph>
+              </Divider>
             </Card.Content>
           </Card>
 
-          <Divider style={[{borderBottomWidth:1, borderBottomColor: 'black'}]} />
+          <Divider style={[{borderBottomWidth: 1, borderBottomColor: 'black'}]} />
+          {/* 메뉴 선택 창 확인 필요 */}
           <MenuSelector menus={this.state.menus}
                         menuClickEvent={() => console.log("dd")}/>
         </ScrollView>
 
         <Appbar style={appBarStyles.bottomFixed}>
           {/* <Icon name="wb-sunny" size={25} color="#ffffff" style={{marginLeft: 7}} /> */}
-          <Appbar.Action style={appBarStyles.iconsStyle} icon="arrow-forward" onPress={() => this.toRervationPage()} />
+          <Appbar.Action style={appBarStyles.iconsStyle} color='white' icon="arrow-forward" onPress={() => this.toRervationPage()} />
         </Appbar>
       </>
     );
@@ -103,23 +109,35 @@ export default class StorePage extends Component {
 
 const cardcontent = StyleSheet.create({
   introduceStore: {
+    flexDirection: 'row',
+    backgroundColor: '#EAEAEA',
+    //or #DEF7DE
+  },
+});
+
+const content = StyleSheet.create({
+  layout:{
     flexDirection: 'column',
-    flex: 1,
   },
 
   introduceStoreImage: {
-    height: 10,
-    width: 10,
+    height: 100,
+    width: 100,
   },
 
   introduceStoreTitle:{
-    flex:1,
+    fontFamily: 'BMJUA_ttf',
+    marginTop: 10,
+    marginLeft: 25,
+    fontSize: 30,
   },
 
   introduceStoreParagraph: {
-    flex: 1,
+    fontFamily: 'BMJUA_ttf',
+    marginLeft: 35,
+    marginTop: 10,
+    fontSize: 20,
   },
-
 });
 
 const appBarStyles = StyleSheet.create({
@@ -128,7 +146,8 @@ const appBarStyles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#cfcfcf',
+    height: 50,
+    backgroundColor: '#3cb371',
   },
   iconsStyle:{
     backgroundColor: '#3cb371',
@@ -159,12 +178,11 @@ const appBarStyles = StyleSheet.create({
 const styles = StyleSheet.create({
 
   container: {
-    flex: 1,
+    flex: 0,
     marginTop: 50,
     // marginBottom은 BottomFixedAppbar의 높이가 되게 넣을 것
-
     // marginBottom은 BottomFixedAppbar의 높이가 되게 넣을 것
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
   },
 
 });

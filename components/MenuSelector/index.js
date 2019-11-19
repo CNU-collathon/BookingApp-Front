@@ -24,7 +24,7 @@ export default class MenuSelector extends Component {
   renderItem(menu, menuClickEvent) {
     return (
       <View>
-        <Card>
+        <Card style={[{backgroundColor: 'black'}]}>
           <TouchableOpacity onPress={() => menuClickEvent(menu.Name , menu.Price)}>
             <Card.Title style={cardtitle.card} title={menu.Name} titleStyle={cardtitle.title} subtitle={`${menu.Price}원`} subtitleStyle={cardtitle.subtitle} 
             left={(props) =>
