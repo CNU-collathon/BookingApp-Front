@@ -40,6 +40,8 @@ export default class Reservation extends Component {
       // modal 창을 띄우기 위한 플래그 변수
       dateTimeSelectorModal: null,
       menuModal: null,
+
+      reservationID: "",
     };
   }
 
@@ -55,7 +57,7 @@ export default class Reservation extends Component {
     let bg_mm = bg_time[1];
     let bg_ss = bg_time[2];
     let beginningSelectedTime = new Date(yy, mm, dd, bg_hh, bg_mm, bg_ss).toISOString();
-    let endSelectedTime = "undefined";
+    let endSelectedTime = "";
 
     if(this.state.selectedTime.split(" ~ ").length > 1) {
       let ed_time = this.state.selectedTime.split(" ~ ")[1].split(":");
@@ -84,6 +86,14 @@ export default class Reservation extends Component {
 
         Menus: this.state.menuRecordSet,
       }
+    })
+    .then(response => {
+      console.log(response)
+      console.log(response.data);
+      this.setState({
+        reservationID: response.data.ID
+      });
+
     });
 
     this.dialogComponent.show();
@@ -310,7 +320,8 @@ export default class Reservation extends Component {
                        onDismissed={() => this.toCategorySelector()}>
         <DialogContent>
           <View>
-            <Text>예약을 완료했습니다. 초기화면으로 돌아갑니다.</Text>
+            <Text>예약을 완료했습니다. 예약 번호는 {this.state.reservationID} 입니다.</Text>
+            <Text>초기화면으로 돌아갑니다.</Text>
           </View>
         </DialogContent>
       </DialogComponent>

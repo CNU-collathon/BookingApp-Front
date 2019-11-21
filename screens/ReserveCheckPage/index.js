@@ -56,6 +56,7 @@ export default class ReserveCheckPage extends Component {
   }
 
   reserveChange() {
+
     axios({
       headers: {'Access-Control-Allow-Origin': '*'},
       method: 'put',
