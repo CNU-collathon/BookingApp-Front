@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph, Divider, DataTable, Appbar, TextInput, ActivityIndicator, Colors } from 'react-native-paper';
+import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'react-native-axios'
-import NumericInput from 'react-native-numeric-input'
+import TimePicker from 'react-native-24h-timepicker';
+import NumericInput from 'react-native-numeric-input';
 
 import FixedTopBar from '../../components/FixedTopBar';
 import MenuRecord from '../../components/MenuRecord';
+import MenuSelector from '../../components/MenuSelector';
 
 import DialogManager, { ScaleAnimation, DialogContent, DialogComponent, DialogTitle } from 'react-native-dialog-component';
 
@@ -34,36 +38,89 @@ export default class ReserveCheckPage extends Component {
       ReservedDateTime: '',
       EndDateTime: '',
       Menu: [],
-
+      WorkPlaceID: '',
       dateTimeSelectorModal: null,
       menuModal: null,
+
+      reservationDoNotExist: false,
+
+      TimeToEdit: "",
+      DateToEdit: "",
+
+      workPlaceMenu: []
     };
   }
 
   async componentDidMount() {
-    fetch(BACKEND_URL + '/reservation/lookup/' + this.props.navigation.getParam('reservationID', null))
+
+    await fetch(BACKEND_URL + '/reservation/lookup/' + this.props.navigation.getParam('reservationID', null))
     .then(response => response.json())
     .then(reservation => {
+      if(reservation.Menu.length < 1){
+        this.setState({
+          reservationDoNotExist: true
+        })
+      }
+      else{
+        this.setState({
+          Address: reservation.Address,
+          WorkPlaceInfo: reservation.WorkPlaceInfo,
+          ReservedDateTime: reservation.ReservedDateTime,
+          EndDateTime: reservation.EndDateTime,
+          Menu: reservation.Menu,
+          WorkPlaceID: reservation.WorkPlaceID
+        });
+      }
+    });
+
+    await fetch(BACKEND_URL + '/menu/' + this.state.WorkPlaceID)
+    .then(response => response.json())
+    .then(menu => {
       this.setState({
-        Address: reservation.Address,
-        WorkPlaceInfo: reservation.WorkPlaceInfo,
-        ReservedDateTime: reservation.ReservedDateTime,
-        EndDateTime: reservation.EndDateTime,
-        Menu: reservation.Menu,
+        workPlaceMenu: menu,
         isLoading: false
       });
     });
   }
 
   reserveChange() {
+
+    let beginningSelectedTime = this.state.ReservedDateTime;
+    let endSelectedTime = this.state.EndDateTime;
+    
+    if(this.state.DateToEdit !== ''){
+      let yymmdd = this.state.DateToEdit.split("-");
+      let yy = yymmdd[0];
+      let mm = yymmdd[1] - 1;
+      let dd = yymmdd[2];
+
+      let bg_time = this.state.TimeToEdit.split(" ~ ")[0].split(":");
+      let bg_hh = bg_time[0];
+      let bg_mm = bg_time[1];
+      let bg_ss = bg_time[2];
+      beginningSelectedTime = new Date(yy, mm, dd, bg_hh, bg_mm, bg_ss).toISOString();
+      endSelectedTime = "";
+
+      if(this.state.TimeToEdit.split(" ~ ").length > 1) {
+        let ed_time = this.state.TimeToEdit.split(" ~ ")[1].split(":");
+        let ed_hh = ed_time[0];
+        let ed_mm = ed_time[1];
+        let ed_ss = ed_time[2];
+        endSelectedTime = new Date(yy, mm, dd, ed_hh, ed_mm, ed_ss).toISOString();
+      }
+    }
+
     axios({
       headers: {'Access-Control-Allow-Origin': '*'},
       method: 'put',
       // fill this url
       url: BACKEND_URL + '/reservation/' + this.state.reservationID,
       data: {
-        ReservedDateTime: this.state.ReservedDateTime,
-        EndDateTime: this.state.EndDateTime,
+
+        ReservedDateTime: beginningSelectedTime,
+
+        EndDateTime: endSelectedTime,
+
         Menu: this.state.Menu,
       }
     });
@@ -96,21 +153,23 @@ export default class ReserveCheckPage extends Component {
 
           <Divider />
 
-          <MenuSelector menus={this.props.navigation.getParam('menus', null)}
+          <MenuSelector menus={this.state.workPlaceMenu}
                         menuClickEvent={(selectedMenuName, selectedMenuPrice) => {
+                          let items = [...this.state.Menu];
+                          let item = {...items[this.state.Menu.length]};
 
-                          let findingIndex = -1;
-                          for (let i = 0; i < this.state.Menu.length; i++){
-                            if(selectedMenuName === this.state.Menu[i].Name){
-                              findingIndex = i;
-                              break;
-                            }
+                          item = {
+                            MenuName: selectedMenuName,
+                            Price: selectedMenuPrice,
+                            Personnel: 1
                           }
 
-                          this.state.Menu[findingIndex].MenuName = selectedMenuName;
-                          this.state.Menu[findingIndex].Price = selectedMenuPrice;
+                          items[this.state.Menu.length] = item;
 
-                          this.forceUpdate();
+                          this.setState({
+                             Menu : items,
+                             menuModal: undefined
+                          });
                         }
                       }
           />
@@ -121,15 +180,15 @@ export default class ReserveCheckPage extends Component {
   calendarModalRender = () => (
     <>
       <View style={modalBoxStyles.selectedDateTiemContainer}>
-        <Text style={modalBoxStyles.selectedDateTime}>예약 날짜 : {this.state.selectedDate}</Text>
-        <Text style={modalBoxStyles.selectedDateTime}>예약 시간 : {this.state.selectedTime}</Text>
+        <Text style={modalBoxStyles.selectedDateTime}>{`변경할 날짜: ${this.state.DateToEdit}`}</Text>
+        <Text style={modalBoxStyles.selectedDateTime}>{`변경할 시간: ${this.state.TimeToEdit}`}</Text>
       </View>
 
       <Calendar current={`${new Date().getFullYear()}-${new Date().getMonth() + 1}`}
                 minDate={`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`}
                 onDayPress={
                   (day) => {
-                    this.setState({ selectedDate : day.dateString });
+                    this.setState({ DateToEdit : day.dateString });
                     this.StartTimePicker.open();
                    }
                  }
@@ -154,7 +213,7 @@ export default class ReserveCheckPage extends Component {
         }}
         onCancel={() => this.StartTimePicker.close()}
         onConfirm={(hour, minute) => {
-          this.setState({ selectedTime : `${hour}:${minute}:00` });
+          this.setState({ TimeToEdit : `${hour}:${minute}:00` });
           this.EndTimePicker.open();
           this.StartTimePicker.close()
         }}
@@ -169,9 +228,39 @@ export default class ReserveCheckPage extends Component {
         }}
         onCancel={() => this.EndTimePicker.close()}
         onConfirm={(hour, minute) => {
-          this.setState({ selectedTime : `${this.state.selectedTime} ~ ${hour}:${minute}:00` });
+
+          this.setState({ TimeToEdit : `${this.state.TimeToEdit} ~ ${hour}:${minute}:00` });
+
+          let timeToEdit = `${this.state.TimeToEdit} ~ ${hour}:${minute}:00`;
+
+          let yymmdd = this.state.DateToEdit.split("-");
+          let yy = yymmdd[0];
+          let mm = yymmdd[1] - 1;
+          let dd = yymmdd[2];
+
+          let bg_time = timeToEdit.split(" ~ ")[0].split(":");
+          let bg_hh = bg_time[0];
+          let bg_mm = bg_time[1];
+          let bg_ss = bg_time[2];
+          let beginningSelectedTime = new Date(yy, mm, dd, bg_hh, bg_mm, bg_ss).toISOString();
+          let endSelectedTime = "";
+
+          if(timeToEdit.split(" ~ ").length > 1) {
+            let ed_time = timeToEdit.split(" ~ ")[1].split(":");
+            let ed_hh = ed_time[0];
+            let ed_mm = ed_time[1];
+            let ed_ss = ed_time[2];
+            endSelectedTime = new Date(yy, mm, dd, ed_hh, ed_mm, ed_ss).toISOString();
+          }
+
+          this.setState({
+            ReservedDateTime: beginningSelectedTime,
+            EndDateTime: endSelectedTime,
+          });
+
           this.EndTimePicker.close();
         }}
+
         hourInterval="1"
         minuteInterval="30"
       />
@@ -203,6 +292,22 @@ export default class ReserveCheckPage extends Component {
       )
     }
 
+    else if(this.state.reservationDoNotExist){
+      return(
+        <DialogComponent dialogTitle={<DialogTitle title="Dialog Title" />}
+                         ref={(dialogComponent) => { this.doNotExistReservation = dialogComponent; }}
+                         onDismissed={() => this.toCategorySelector()}>
+          <DialogContent>
+            <View>
+              <Text>존재하지 않는 예약입니다. 초기화면으로 돌아갑니다.</Text>
+            </View>
+          </DialogContent>
+        </DialogComponent>
+      )
+
+      this.doNotExistReservation.show();
+    }
+
     let reservationItems = [];
 
     let index = 0;
@@ -227,7 +332,13 @@ export default class ReserveCheckPage extends Component {
 
     return (
       <>
-        <FixedTopBar title={"예약 내역 확인 및 변경"} iconStr="" />
+        <Appbar style={appBarStyles.topFixed}>
+          <Text style={appBarStyles.titleStyle}>{"예약 내역 확인 및 변경"}</Text>
+          <Appbar.Action icon="add" onPress={() =>{
+            this.setState({ menuModal: 2 });
+          }} />
+        </Appbar>
+
         <View style={styles.container}>
           <ScrollView>
 
@@ -270,8 +381,32 @@ export default class ReserveCheckPage extends Component {
 
         <Appbar style={appBarStyles.bottomFixed}>
           <Appbar.Content titleStyle={styles.reserveBtn} title="예약 변경" onPress={() => this.reserveChange()}/>
-          <Appbar.Content titleStyle={styles.reserveBtn} title="예약 취소" onPress={() => console.log("2")}/>
+          <Appbar.Content titleStyle={styles.reserveBtn} title="예약 취소" onPress={() => this.reserveCancel()}/>
         </Appbar>
+
+        <Modal isVisible={this.state.dateTimeSelectorModal === 2}
+               backdropColor={'white'}
+               backdropOpacity={1}
+               animationIn={'zoomInDown'}
+               animationOut={'zoomOutUp'}
+               animationInTiming={1000}
+               animationOutTiming={1000}
+               backdropTransitionInTiming={1000}
+               backdropTransitionOutTiming={1000}>
+          {this.calendarModalRender()}
+        </Modal>
+
+        <Modal isVisible={this.state.menuModal === 2}
+               backdropColor={'white'}
+               backdropOpacity={1}
+               animationIn={'zoomInDown'}
+               animationOut={'zoomOutUp'}
+               animationInTiming={1000}
+               animationOutTiming={1000}
+               backdropTransitionInTiming={1000}
+               backdropTransitionOutTiming={1000}>
+          {this.menuModalRender()}
+        </Modal>
 
         <DialogComponent dialogTitle={<DialogTitle title="Dialog Title" />}
                          ref={(dialogComponent) => { this.dialogComponent = dialogComponent; }}
@@ -306,7 +441,6 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    marginTop: 55,
     flex: 1,
     backgroundColor: '#ffffff',
   },
@@ -318,13 +452,12 @@ const styles = StyleSheet.create({
   },
 
   reserveBtn: {
-    fontSize: 18,
+    fontSize: 22,
     textAlign: 'center',
-    fontFamily: 'JejuGothic'
+    fontFamily: 'BMJUA_ttf'
   },
 
 });
-
 
 const appBarStyles = StyleSheet.create({
 
@@ -357,6 +490,35 @@ const appBarStyles = StyleSheet.create({
 
   iconsEndStyle: {
     alignSelf: 'flex-end',
+  },
+
+});
+
+const modalBoxStyles = StyleSheet.create({
+
+  timePickerBtn: {
+    fontSize: 30,
+    textAlign: 'center',
+    fontFamily: 'JejuGothic',
+    backgroundColor: "#c9c9c9",
+    paddingVertical: 1,
+    paddingHorizontal: 17,
+    borderRadius: 3,
+    marginVertical: 50
+  },
+
+  selectedDateTime: {
+    fontSize: 15,
+    fontFamily: 'JejuGothic',
+    lineHeight: 30,
+  },
+
+  selectedDateTiemContainer: {
+    backgroundColor: "#c9c9c9",
+    paddingVertical: 1,
+    paddingHorizontal: 17,
+    borderRadius: 3,
+    marginVertical: 50,
   },
 
 });

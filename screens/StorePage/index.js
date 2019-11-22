@@ -94,10 +94,9 @@ export default class StorePage extends Component {
       <>
         <FixedTopBar title={navigation.getParam('store', null)} iconStr="" />
 
-        <ScrollView style={styles.container}>
+        <ScrollView style={{height: 535}}>
           <Card>
             <Card.Content style={cardcontent.introduceStore}>
-                {/*<Image style={content.introduceStoreImage} source={require('./StoreMenu/test.png')}></Image>*/}
                 <Divider style={content.layout,[{borderBottomWidth:1, borderBottomColor: '#EAEAEA'}]}>
                   <Title style={content.introduceStoreTitle}>Store Information</Title>
                   {imageComponent}
@@ -105,8 +104,9 @@ export default class StorePage extends Component {
                 </Divider>
             </Card.Content>
           </Card>
+        </ScrollView>
 
-
+        <ScrollView>
           <Divider style={[{borderBottomColor: 'black', borderBottomWidth: 1}]}/>
           <MenuSelector menus={this.state.menus}
                         menuClickEvent={() => console.log("dd")}/>
@@ -124,48 +124,12 @@ export default class StorePage extends Component {
   }
 }
 
-/* 버전 1 Style
 const cardcontent = StyleSheet.create({
   introduceStore: {
-    flexDirection: 'row',
-    height: 125,
-    backgroundColor: '#EAEAEA',
-    //or #DEF7DE
-  },
-});
-
-const content = StyleSheet.create({
-  layout:{
+    marginTop: 35,
+    height: 400,
     flexDirection: 'column',
-  },
-
-  introduceStoreImage: {
-    height: 100,
-    width: 100,
-  },
-
-  introduceStoreTitle:{
-    fontFamily: 'BMJUA_ttf',
-    marginTop: 10,
-    marginLeft: 25,
-    fontSize: 30,
-  },
-
-  introduceStoreParagraph: {
-    fontFamily: 'BMJUA_ttf',
-    marginLeft: 76,
-    marginTop: 10,
-    fontSize: 20,
-  },
-});
-*/
-
-const cardcontent = StyleSheet.create({
-  introduceStore: {
-    flexDirection: 'column',
-    height: 310,
     backgroundColor: '#EAEAEA',
-    //or #DEF7DE
   },
 });
 
@@ -173,14 +137,6 @@ const content = StyleSheet.create({
   layout:{
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-
-  introduceStoreImage: {
-    height: 200,
-    width: 200,
-    marginLeft: '25%',
-    justifyContent: 'space-between',
-    resizeMode: 'contain',
   },
 
   introduceStoreTitle:{

@@ -58,7 +58,6 @@ export default class StoreSelector extends Component {
           <TouchableOpacity onPress={() => this.onPressItem(store.Name, store.WorkPlaceID)}>
             <Card.Title style={cardtitle.title}
                         title={store.Name}
-                        subtitle="대표 메뉴들..."
                         titleStyle={cardtitle.titleStyle}
                         subtitleStyle={cardtitle.subtitleStyle}
                         left={(props) => typeof store.Image == "undefined" ?
@@ -141,8 +140,8 @@ const cardtitle = StyleSheet.create({
 const image = StyleSheet.create({
   storeImage: {
     backgroundColor: 'white',
-    height: 110,
-    width: 110,
+    height: 100,
+    width: 100,
     marginTop: 5,
   }
 });

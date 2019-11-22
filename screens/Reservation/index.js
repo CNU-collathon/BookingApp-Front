@@ -40,6 +40,8 @@ export default class Reservation extends Component {
       // modal 창을 띄우기 위한 플래그 변수
       dateTimeSelectorModal: null,
       menuModal: null,
+
+      reservationID: "",
     };
   }
 
@@ -47,7 +49,7 @@ export default class Reservation extends Component {
 
     let yymmdd = this.state.selectedDate.split("-");
     let yy = yymmdd[0];
-    let mm = yymmdd[1];
+    let mm = yymmdd[1] - 1;
     let dd = yymmdd[2];
 
     let bg_time = this.state.selectedTime.split(" ~ ")[0].split(":");
@@ -55,7 +57,7 @@ export default class Reservation extends Component {
     let bg_mm = bg_time[1];
     let bg_ss = bg_time[2];
     let beginningSelectedTime = new Date(yy, mm, dd, bg_hh, bg_mm, bg_ss).toISOString();
-    let endSelectedTime = "undefined";
+    let endSelectedTime = "";
 
     if(this.state.selectedTime.split(" ~ ").length > 1) {
       let ed_time = this.state.selectedTime.split(" ~ ")[1].split(":");
@@ -84,6 +86,14 @@ export default class Reservation extends Component {
 
         Menus: this.state.menuRecordSet,
       }
+    })
+    .then(response => {
+      console.log(response)
+      console.log(response.data);
+      this.setState({
+        reservationID: response.data.ID
+      });
+
     });
 
     this.dialogComponent.show();
@@ -198,7 +208,6 @@ export default class Reservation extends Component {
 
     this.forceUpdate();
 
-    console.log(this.state.menuRecordSet);
   }
 
   render() {
@@ -278,13 +287,16 @@ export default class Reservation extends Component {
                          value={this.state.name}
                          onChangeText={name => this.setState({ name })}
                          style={styles.textInput}
-                         placeholder='성함을 입력해주세요'/>
+                         placeholder='성함을 입력해주세요'
+                         />
 
               <TextInput label='핸드폰 번호'
                          value={this.state.phoneNum}
                          onChangeText={phoneNum => this.setState({ phoneNum })}
                          style={styles.textInput}
-                         placeholder='핸드폰 번호를 입력해주세요'/>
+                         placeholder='핸드폰 번호를 입력해주세요'
+                         keyboardType={'numeric'}
+                         />
 
             </DataTable>
 
@@ -310,7 +322,8 @@ export default class Reservation extends Component {
                        onDismissed={() => this.toCategorySelector()}>
         <DialogContent>
           <View>
-            <Text>예약을 완료했습니다. 초기화면으로 돌아갑니다.</Text>
+            <Text>예약을 완료했습니다. 예약 번호는 {this.state.reservationID} 입니다.</Text>
+            <Text>초기화면으로 돌아갑니다.</Text>
           </View>
         </DialogContent>
       </DialogComponent>
