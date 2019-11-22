@@ -207,7 +207,7 @@ export default class Reservation extends Component {
     this.state.menuRecordSet[childIndex].Personnel = newCnt;
 
     this.forceUpdate();
-    
+
   }
 
   render() {
@@ -287,13 +287,16 @@ export default class Reservation extends Component {
                          value={this.state.name}
                          onChangeText={name => this.setState({ name })}
                          style={styles.textInput}
-                         placeholder='성함을 입력해주세요'/>
+                         placeholder='성함을 입력해주세요'
+                         />
 
               <TextInput label='핸드폰 번호'
                          value={this.state.phoneNum}
                          onChangeText={phoneNum => this.setState({ phoneNum })}
                          style={styles.textInput}
-                         placeholder='핸드폰 번호를 입력해주세요'/>
+                         placeholder='핸드폰 번호를 입력해주세요'
+                         keyboardType={'numeric'}
+                         />
 
             </DataTable>
 

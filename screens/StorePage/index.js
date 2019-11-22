@@ -124,42 +124,6 @@ export default class StorePage extends Component {
   }
 }
 
-/* 버전 1 Style
-const cardcontent = StyleSheet.create({
-  introduceStore: {
-    flexDirection: 'row',
-    height: 125,
-    backgroundColor: '#EAEAEA',
-    //or #DEF7DE
-  },
-});
-
-const content = StyleSheet.create({
-  layout:{
-    flexDirection: 'column',
-  },
-
-  introduceStoreImage: {
-    height: 100,
-    width: 100,
-  },
-
-  introduceStoreTitle:{
-    fontFamily: 'BMJUA_ttf',
-    marginTop: 10,
-    marginLeft: 25,
-    fontSize: 30,
-  },
-
-  introduceStoreParagraph: {
-    fontFamily: 'BMJUA_ttf',
-    marginLeft: 76,
-    marginTop: 10,
-    fontSize: 20,
-  },
-});
-*/
-
 const cardcontent = StyleSheet.create({
   introduceStore: {
     flexDirection: 'column',
