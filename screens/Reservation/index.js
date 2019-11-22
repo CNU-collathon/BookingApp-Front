@@ -49,7 +49,7 @@ export default class Reservation extends Component {
 
     let yymmdd = this.state.selectedDate.split("-");
     let yy = yymmdd[0];
-    let mm = yymmdd[1];
+    let mm = yymmdd[1] - 1;
     let dd = yymmdd[2];
 
     let bg_time = this.state.selectedTime.split(" ~ ")[0].split(":");
