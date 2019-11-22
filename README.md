@@ -1,10 +1,14 @@
 <h1 align="center">
     <a href="#">
-    자리 있어요?
+    자리 있나요?
    </a>
 </h1>
 
-2019 Software Engineering Team Project, Tested on Android 10
+Tested on Android 10  
+
+2019 Software Engineering Team Project  
+
+2019 CNU Collathon  
 
 ### 📋 Dependency
 
