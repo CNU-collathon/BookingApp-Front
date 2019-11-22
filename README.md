@@ -1,8 +1,12 @@
-### BookingServiceForSelfEmployed
+<h1 align="center">
+    <a href="#">
+    자리 있어요?
+   </a>
+</h1>
 
 2019 Software Engineering Team Project, Tested on Android 10
 
-### Dependency
+### 📋 Dependency
 
 > react 16.9.0
 >
@@ -36,7 +40,7 @@
 >
 > react-native-dialog-component
 
-### How to use
+### ⛷️ How to use
 
 npm i로 package.json의 node_modules를 설치.
 
@@ -45,7 +49,7 @@ npm i react-native-cli -g로 react-native-cli를 전역에 설치.
 AVD Manager로 시뮬레이터를 구동한 뒤 react-native run-android로 실행
 
 
-### Screen shot
+### ✔️ Screen shot
 
 * 스플래시 스크린
 
