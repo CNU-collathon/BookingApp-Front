@@ -46,3 +46,61 @@ AVD Manager로 시뮬레이터를 구동한 뒤 react-native run-android로 실�
 
 
 ### Screen shot
+
+* 스플래시 스크린
+
+<p align="center">
+<img src="screenshots/Splash.png">
+</p>
+
+* 카테고리 선택 화면
+
+<p align="center">
+<img src="screenshots/categorySelector.png">
+</p>
+
+* 가게 화면
+
+<p align="center">
+<img src="screenshots/storepage.png">
+</p>
+
+* 예약 화면
+
+<p align="center">
+<img src="screenshots/reservation.png">
+</p>
+
+* 예약 후 화면
+
+<p align="center">
+<img src="screenshots/reserveCheck.png">
+</p>
+
+* 메뉴 선택 화면
+
+<p align="center">
+<img src="screenshots/menu.png">
+</p>
+
+* 예약 조회
+
+<p align="center">
+<img src="screenshots/reserveSearch.png">
+</p>
+
+* 예약 확인 및 변경
+
+<p align="center">
+<img src="screenshots/reserveChange.png">
+</p>
+
+* 날짜 및 시간 선택
+
+<p align="center">
+<img src="screenshots/calendar.png">
+</p>
+
+
+
+
