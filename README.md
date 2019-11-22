@@ -10,7 +10,18 @@ Tested on Android 10
 
 2019 CNU Collathon  
 
-### 📋 Dependency
+- [**BookingApp-Front**][a] : 리액트 네이티브로 작성된 앱의 프론트 입니다.
+
+- [**BookingApp-Backend**][b] : 노드 JS, Express로 작성된 백엔드 서버입니다. 
+
+- [**BookingApp-Web**][c] : 자영업자에게 사업장, 메뉴 정보 등을 등록하고, 고객들의 예약 현황을 관리할 수 있게 하는 웹 페이지 입니다. 
+
+[a]: https://github.com/CNU-collathon/BookingApp-Front
+[b]: https://github.com/CNU-collathon/BookingApp-Backend
+[c]: https://github.com/CNU-collathon/BookingApp-Web
+
+
+## 📋 Dependency
 
 > react 16.9.0
 >
@@ -44,7 +55,7 @@ Tested on Android 10
 >
 > react-native-dialog-component
 
-### ⛷️ How to use
+## ⛷️ How to use
 
 npm i로 package.json의 node_modules를 설치.
 
@@ -53,7 +64,7 @@ npm i react-native-cli -g로 react-native-cli를 전역에 설치.
 AVD Manager로 시뮬레이터를 구동한 뒤 react-native run-android로 실행
 
 
-### ✔️ Screen shot
+## ✔️ Screen shot
 
 * 스플래시 스크린
 
