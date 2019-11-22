@@ -29,6 +29,8 @@ export default class MenuRecord extends Component {
   render() {
     const { menuPressed, personCnt, callback } = this.props;
 
+    if(this.state.personCnt == 0) return <></>;
+
     return (
       <>
        <DataTable.Row>

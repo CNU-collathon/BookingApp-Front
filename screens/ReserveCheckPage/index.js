@@ -38,7 +38,7 @@ export default class ReserveCheckPage extends Component {
       ReservedDateTime: '',
       EndDateTime: '',
       Menu: [],
-
+      WorkPlaceID: '',
       dateTimeSelectorModal: null,
       menuModal: null,
 
@@ -46,11 +46,14 @@ export default class ReserveCheckPage extends Component {
 
       TimeToEdit: "",
       DateToEdit: "",
+
+      workPlaceMenu: []
     };
   }
 
   async componentDidMount() {
-    fetch(BACKEND_URL + '/reservation/lookup/' + this.props.navigation.getParam('reservationID', null))
+
+    await fetch(BACKEND_URL + '/reservation/lookup/' + this.props.navigation.getParam('reservationID', null))
     .then(response => response.json())
     .then(reservation => {
       if(reservation.Menu.length < 1){
@@ -65,32 +68,46 @@ export default class ReserveCheckPage extends Component {
           ReservedDateTime: reservation.ReservedDateTime,
           EndDateTime: reservation.EndDateTime,
           Menu: reservation.Menu,
-          isLoading: false
+          WorkPlaceID: reservation.WorkPlaceID
         });
       }
+    });
+
+    await fetch(BACKEND_URL + '/menu/' + this.state.WorkPlaceID)
+    .then(response => response.json())
+    .then(menu => {
+      this.setState({
+        workPlaceMenu: menu,
+        isLoading: false
+      });
     });
   }
 
   reserveChange() {
 
-    let yymmdd = this.state.selectedDate.split("-");
-    let yy = yymmdd[0];
-    let mm = yymmdd[1] - 1;
-    let dd = yymmdd[2];
+    let beginningSelectedTime = this.state.ReservedDateTime;
+    let endSelectedTime = this.state.EndDateTime;
+    
+    if(this.state.DateToEdit !== ''){
+      let yymmdd = this.state.DateToEdit.split("-");
+      let yy = yymmdd[0];
+      let mm = yymmdd[1] - 1;
+      let dd = yymmdd[2];
 
-    let bg_time = this.state.selectedTime.split(" ~ ")[0].split(":");
-    let bg_hh = bg_time[0];
-    let bg_mm = bg_time[1];
-    let bg_ss = bg_time[2];
-    let beginningSelectedTime = new Date(yy, mm, dd, bg_hh, bg_mm, bg_ss).toISOString();
-    let endSelectedTime = "";
+      let bg_time = this.state.TimeToEdit.split(" ~ ")[0].split(":");
+      let bg_hh = bg_time[0];
+      let bg_mm = bg_time[1];
+      let bg_ss = bg_time[2];
+      beginningSelectedTime = new Date(yy, mm, dd, bg_hh, bg_mm, bg_ss).toISOString();
+      endSelectedTime = "";
 
-    if(this.state.selectedTime.split(" ~ ").length > 1) {
-      let ed_time = this.state.selectedTime.split(" ~ ")[1].split(":");
-      let ed_hh = ed_time[0];
-      let ed_mm = ed_time[1];
-      let ed_ss = ed_time[2];
-      endSelectedTime = new Date(yy, mm, dd, ed_hh, ed_mm, ed_ss).toISOString();
+      if(this.state.TimeToEdit.split(" ~ ").length > 1) {
+        let ed_time = this.state.TimeToEdit.split(" ~ ")[1].split(":");
+        let ed_hh = ed_time[0];
+        let ed_mm = ed_time[1];
+        let ed_ss = ed_time[2];
+        endSelectedTime = new Date(yy, mm, dd, ed_hh, ed_mm, ed_ss).toISOString();
+      }
     }
 
     axios({
@@ -136,21 +153,23 @@ export default class ReserveCheckPage extends Component {
 
           <Divider />
 
-          <MenuSelector menus={this.props.navigation.getParam('menus', null)}
+          <MenuSelector menus={this.state.workPlaceMenu}
                         menuClickEvent={(selectedMenuName, selectedMenuPrice) => {
+                          let items = [...this.state.Menu];
+                          let item = {...items[this.state.Menu.length]};
 
-                          let findingIndex = -1;
-                          for (let i = 0; i < this.state.Menu.length; i++){
-                            if(selectedMenuName === this.state.Menu[i].Name){
-                              findingIndex = i;
-                              break;
-                            }
+                          item = {
+                            MenuName: selectedMenuName,
+                            Price: selectedMenuPrice,
+                            Personnel: 1
                           }
 
-                          this.state.Menu[findingIndex].MenuName = selectedMenuName;
-                          this.state.Menu[findingIndex].Price = selectedMenuPrice;
+                          items[this.state.Menu.length] = item;
 
-                          this.forceUpdate();
+                          this.setState({
+                             Menu : items,
+                             menuModal: undefined
+                          });
                         }
                       }
           />
@@ -313,7 +332,13 @@ export default class ReserveCheckPage extends Component {
 
     return (
       <>
-        <FixedTopBar title={"예약 내역 확인 및 변경"} iconStr="" />
+        <Appbar style={appBarStyles.topFixed}>
+          <Text style={appBarStyles.titleStyle}>{"예약 내역 확인 및 변경"}</Text>
+          <Appbar.Action icon="add" onPress={() =>{
+            this.setState({ menuModal: 2 });
+          }} />
+        </Appbar>
+
         <View style={styles.container}>
           <ScrollView>
 
@@ -416,7 +441,6 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    marginTop: 55,
     flex: 1,
     backgroundColor: '#ffffff',
   },
@@ -434,7 +458,6 @@ const styles = StyleSheet.create({
   },
 
 });
-
 
 const appBarStyles = StyleSheet.create({
 

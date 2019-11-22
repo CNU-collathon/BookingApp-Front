@@ -207,8 +207,7 @@ export default class Reservation extends Component {
     this.state.menuRecordSet[childIndex].Personnel = newCnt;
 
     this.forceUpdate();
-
-    console.log(this.state.menuRecordSet);
+    
   }
 
   render() {
