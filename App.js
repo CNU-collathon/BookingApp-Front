@@ -20,6 +20,8 @@ const RootStack = createStackNavigator({
   initialRouteName: 'CategorySelector',
 });
 
+console.disableYellowBox = true;
+
 const AppContainer = createAppContainer(RootStack);
 
 export default AppContainer;

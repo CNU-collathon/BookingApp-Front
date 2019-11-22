@@ -56,10 +56,12 @@ export default class ReserveCheckPage extends Component {
     await fetch(BACKEND_URL + '/reservation/lookup/' + this.props.navigation.getParam('reservationID', null))
     .then(response => response.json())
     .then(reservation => {
-      if(reservation.Menu.length < 1){
+      if(reservation.result === 0){
         this.setState({
-          reservationDoNotExist: true
-        })
+          reservationDoNotExist: true,
+          isLoading: false
+        });
+        this.doNotExistReservation.show();
       }
       else{
         this.setState({
@@ -71,7 +73,7 @@ export default class ReserveCheckPage extends Component {
           WorkPlaceID: reservation.WorkPlaceID
         });
       }
-    });
+    })
 
     await fetch(BACKEND_URL + '/menu/' + this.state.WorkPlaceID)
     .then(response => response.json())
@@ -87,7 +89,7 @@ export default class ReserveCheckPage extends Component {
 
     let beginningSelectedTime = this.state.ReservedDateTime;
     let endSelectedTime = this.state.EndDateTime;
-    
+
     if(this.state.DateToEdit !== ''){
       let yymmdd = this.state.DateToEdit.split("-");
       let yy = yymmdd[0];
@@ -281,7 +283,6 @@ export default class ReserveCheckPage extends Component {
 
     this.forceUpdate();
 
-    console.log(this.state.Menu);
   }
 
   render() {
@@ -304,8 +305,6 @@ export default class ReserveCheckPage extends Component {
           </DialogContent>
         </DialogComponent>
       )
-
-      this.doNotExistReservation.show();
     }
 
     let reservationItems = [];
